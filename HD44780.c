@@ -286,7 +286,7 @@ void lcd_return_home() {
  * 
  * @param c Character.
  */
-void lcd_putc(char c) {
+void lcd_putc(const char c) {
 	// Put EN HIGH to start sending data.
 	P2OUT |= EN;
 	delay_us(200);
@@ -321,4 +321,11 @@ void lcd_putc(char c) {
 	// End the data transaction.
 	delay_us(200);
 	P2OUT &= ~EN;
+}
+
+void lcd_print(const char *string) {
+	while (*string != '\0') {
+		//if (*string == '\n') {
+		lcd_putc(*string++);
+	}
 }

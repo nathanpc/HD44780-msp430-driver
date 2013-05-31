@@ -20,6 +20,8 @@ void lcd_init(bool cur, bool blk);
 
 void lcd_return_home();
 void lcd_clear();
-void lcd_putc(char c);
+
+void lcd_putc(const char c);
+void lcd_print(const char *string);
 
 #endif  // _HD44780_LCD_DRIVER_H_
