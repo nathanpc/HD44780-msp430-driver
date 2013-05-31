@@ -320,6 +320,11 @@ void lcd_putc(const char c) {
 	P2OUT &= ~EN;
 }
 
+/**
+ * Print a string in the screen.
+ * 
+ * @param string The string.
+ */
 void lcd_print(const char *string) {
 	while (*string != '\0') {
 		//if (*string == '\n') {
