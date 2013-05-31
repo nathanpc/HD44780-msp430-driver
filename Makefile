@@ -3,7 +3,7 @@ DEVICE= msp430g2553
 PROJECT = $(NAME)-$(DEVICE)
 CC = msp430-gcc -std=c99 -Os -mmcu=$(DEVICE)
 MSPDEBUG = sudo mspdebug rf2500
-SRC = HD44780_test.c HD44780.c delay.c
+SRC = test.c HD44780.c delay.c
 
 all: $(PROJECT).elf
 
