@@ -18,14 +18,9 @@ run: $(PROJECT).elf
 
 reset:
 	$(MSPDEBUG) "reset"
-#on:
-#	$(PK2) -T
 
-#off:
-#	$(PK2) -W
-
-#erase:
-#	$(PK2) -E
+erase:
+	$(MSPDEBUG) "erase"
 
 clean:
 	rm -f *.elf
