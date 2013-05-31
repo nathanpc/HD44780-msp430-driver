@@ -13,8 +13,7 @@
 #include "delay.h"
 
 // Define the LCD pins.
-#define RS BIT0
-#define RW BIT1
+#define RS BIT1
 #define EN BIT2
 #define D4 BIT3
 #define D5 BIT4
@@ -84,7 +83,7 @@ void lcd_init(bool cur, bool blk) {
  */
 void lcd_setup() {
 	// Set the outputs and turn XIN into P2.6
-	P2DIR |= (RS + RW + EN + D4 + D5 + D6 + D7);
+	P2DIR |= (RS + EN + D4 + D5 + D6 + D7);
 	P2SEL &= ~D7;
 }
 
@@ -97,7 +96,7 @@ void lcd_init_function_set() {
 	delay_us(200);
 	
 	// First 4 bits of the packet. (00 0011)
-	P2OUT &= ~(RS + RW + D6 + D7);
+	P2OUT &= ~(RS + D6 + D7);
 	P2OUT |= (D5 + D4);
 	
 	// End the packet transaction.
@@ -114,7 +113,7 @@ void lcd_function_set() {
 	delay_us(200);
 	
 	// First 4 bits of the packet. (00 0010)
-	P2OUT &= ~(RS + RW + D4 + D6 + D7);
+	P2OUT &= ~(RS + D4 + D6 + D7);
 	P2OUT |= D5;
 	
 	// End the packet transaction.
@@ -128,7 +127,7 @@ void lcd_function_set() {
 	delay_us(200);
 	
 	// First 4 bits of the packet. (00 0010)
-	P2OUT &= ~(RS + RW + D4 + D6 + D7);
+	P2OUT &= ~(RS + D4 + D6 + D7);
 	P2OUT |= D5;
 	
 	// End the packet transaction.
@@ -141,7 +140,7 @@ void lcd_function_set() {
 	delay_us(200);
 	
 	// Last 4 bits of the packet. (00 NF00)
-	P2OUT &= ~(RS + RW + D4 + D5 + D6);
+	P2OUT &= ~(RS + D4 + D5 + D6);
 	P2OUT |= D7;
 	
 	// End the data transaction.
@@ -162,7 +161,7 @@ void lcd_display_control(bool disp, bool cur, bool blk) {
 	delay_us(200);
 	
 	// First 4 bits of the packet. (00 0000)
-	P2OUT &= ~(RS + RW + D4 + D5 + D6 + D7);
+	P2OUT &= ~(RS + D4 + D5 + D6 + D7);
 	
 	// End the packet transaction.
 	delay_us(200);
@@ -174,7 +173,7 @@ void lcd_display_control(bool disp, bool cur, bool blk) {
 	delay_us(200);
 	
 	// Last 4 bits of the packet. (00 1DCB)
-	P2OUT &= ~(RS + RW);
+	P2OUT &= ~RS;
 	P2OUT |= D7;
 	
 	bit_to_pin(disp, 0, D6);
@@ -195,7 +194,7 @@ void lcd_entry_mode() {
 	delay_us(200);
 	
 	// First 4 bits of the packet. (00 0000)
-	P2OUT &= ~(RS + RW + D4 + D5 + D6 + D7);
+	P2OUT &= ~(RS + D4 + D5 + D6 + D7);
 	
 	// End the packet transaction.
 	delay_us(200);
@@ -207,7 +206,7 @@ void lcd_entry_mode() {
 	delay_us(200);
 	
 	// Last 4 bits of the packet. (00 0110)
-	P2OUT &= ~(RS + RW + D4 + D7);
+	P2OUT &= ~(RS + D4 + D7);
 	P2OUT |= (D5 + D6);
 	
 	// End the data transaction.
@@ -224,7 +223,7 @@ void _lcd_clear() {
 	delay_us(200);
 	
 	// First 4 bits of the packet. (00 0000)
-	P2OUT &= ~(RS + RW + D4 + D5 + D6 + D7);
+	P2OUT &= ~(RS + D4 + D5 + D6 + D7);
 	
 	// End the packet transaction.
 	delay_us(200);
@@ -236,7 +235,7 @@ void _lcd_clear() {
 	delay_us(200);
 	
 	// Last 4 bits of the packet. (00 0001)
-	P2OUT &= ~(RS + RW + D5 + D6 + D7);
+	P2OUT &= ~(RS + D5 + D6 + D7);
 	P2OUT |= D4;
 	
 	// End the data transaction.
@@ -261,7 +260,7 @@ void lcd_return_home() {
 	delay_us(200);
 	
 	// First 4 bits of the packet. (00 0000)
-	P2OUT &= ~(RS + RW + D4 + D5 + D6 + D7);
+	P2OUT &= ~(RS + D4 + D5 + D6 + D7);
 	
 	// End the packet transaction.
 	delay_us(200);
@@ -273,7 +272,7 @@ void lcd_return_home() {
 	delay_us(200);
 	
 	// Last 4 bits of the packet. (00 0010)
-	P2OUT &= ~(RS + RW + D4 + D6 + D7);
+	P2OUT &= ~(RS + D4 + D6 + D7);
 	P2OUT |= D5;
 	
 	// End the data transaction.
@@ -293,7 +292,6 @@ void lcd_putc(const char c) {
 	
 	// First 4 bits of the packet. (00 0100)
 	P2OUT |= RS;
-	P2OUT &= ~RW;
 
 	bit_to_pin(c, 4, D4);
 	bit_to_pin(c, 5, D5);
@@ -311,7 +309,6 @@ void lcd_putc(const char c) {
 	
 	// Last 4 bits of the packet. (00 0001)
 	P2OUT |= RS;
-	P2OUT &= ~RW;
 
 	bit_to_pin(c, 0, D4);
 	bit_to_pin(c, 1, D5);
