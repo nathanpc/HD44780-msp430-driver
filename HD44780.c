@@ -94,14 +94,14 @@ void lcd_setup() {
 void lcd_init_function_set() {
 	// Put EN HIGH to start sending data.
 	P2OUT |= EN;
-	delay_us(300);
+	delay_us(200);
 	
 	// First 4 bits of the packet. (00 0011)
 	P2OUT &= ~(RS + RW + D6 + D7);
 	P2OUT |= (D5 + D4);
 	
 	// End the packet transaction.
-	delay_us(300);
+	delay_us(200);
 	P2OUT &= ~EN;
 }
 
@@ -111,41 +111,41 @@ void lcd_init_function_set() {
 void lcd_function_set() {
 	// Put EN HIGH to start sending data.
 	P2OUT |= EN;
-	delay_us(300);
+	delay_us(200);
 	
 	// First 4 bits of the packet. (00 0010)
 	P2OUT &= ~(RS + RW + D4 + D6 + D7);
 	P2OUT |= D5;
 	
 	// End the packet transaction.
-	delay_us(300);
+	delay_us(200);
 	P2OUT &= ~EN;
 
 	//////////////////////////////////////////
 
 	// Put EN HIGH to start sending data.
 	P2OUT |= EN;
-	delay_us(300);
+	delay_us(200);
 	
 	// First 4 bits of the packet. (00 0010)
 	P2OUT &= ~(RS + RW + D4 + D6 + D7);
 	P2OUT |= D5;
 	
 	// End the packet transaction.
-	delay_us(300);
+	delay_us(200);
 	P2OUT &= ~EN;
 	
 	
 	// Put EN HIGH to start sending data.
 	P2OUT |= EN;
-	delay_us(300);
+	delay_us(200);
 	
 	// Last 4 bits of the packet. (00 NF00)
 	P2OUT &= ~(RS + RW + D4 + D5 + D6);
 	P2OUT |= D7;
 	
 	// End the data transaction.
-	delay_us(300);
+	delay_us(200);
 	P2OUT &= ~EN;
 }
 
@@ -159,19 +159,19 @@ void lcd_function_set() {
 void lcd_display_control(bool disp, bool cur, bool blk) {
 	// Put EN HIGH to start sending data.
 	P2OUT |= EN;
-	delay_us(300);
+	delay_us(200);
 	
 	// First 4 bits of the packet. (00 0000)
 	P2OUT &= ~(RS + RW + D4 + D5 + D6 + D7);
 	
 	// End the packet transaction.
-	delay_us(300);
+	delay_us(200);
 	P2OUT &= ~EN;
 
 
 	// Put EN HIGH to start sending data.
 	P2OUT |= EN;
-	delay_us(300);
+	delay_us(200);
 	
 	// Last 4 bits of the packet. (00 1DCB)
 	P2OUT &= ~(RS + RW);
@@ -182,7 +182,7 @@ void lcd_display_control(bool disp, bool cur, bool blk) {
 	bit_to_pin(blk, 0, D4);
 	
 	// End the data transaction.
-	delay_us(300);
+	delay_us(200);
 	P2OUT &= ~EN;
 }
 
@@ -192,26 +192,26 @@ void lcd_display_control(bool disp, bool cur, bool blk) {
 void lcd_entry_mode() {
 	// Put EN HIGH to start sending data.
 	P2OUT |= EN;
-	delay_us(300);
+	delay_us(200);
 	
 	// First 4 bits of the packet. (00 0000)
 	P2OUT &= ~(RS + RW + D4 + D5 + D6 + D7);
 	
 	// End the packet transaction.
-	delay_us(300);
+	delay_us(200);
 	P2OUT &= ~EN;
 
 
 	// Put EN HIGH to start sending data.
 	P2OUT |= EN;
-	delay_us(300);
+	delay_us(200);
 	
 	// Last 4 bits of the packet. (00 0110)
 	P2OUT &= ~(RS + RW + D4 + D7);
 	P2OUT |= (D5 + D6);
 	
 	// End the data transaction.
-	delay_us(300);
+	delay_us(200);
 	P2OUT &= ~EN;
 }
 
@@ -221,26 +221,26 @@ void lcd_entry_mode() {
 void _lcd_clear() {
 	// Put EN HIGH to start sending data.
 	P2OUT |= EN;
-	delay_us(300);
+	delay_us(200);
 	
 	// First 4 bits of the packet. (00 0000)
 	P2OUT &= ~(RS + RW + D4 + D5 + D6 + D7);
 	
 	// End the packet transaction.
-	delay_us(300);
+	delay_us(200);
 	P2OUT &= ~EN;
 
 
 	// Put EN HIGH to start sending data.
 	P2OUT |= EN;
-	delay_us(300);
+	delay_us(200);
 	
 	// Last 4 bits of the packet. (00 0001)
 	P2OUT &= ~(RS + RW + D5 + D6 + D7);
 	P2OUT |= D4;
 	
 	// End the data transaction.
-	delay_us(300);
+	delay_us(200);
 	P2OUT &= ~EN;
 }
 
@@ -258,26 +258,26 @@ void lcd_clear() {
 void lcd_return_home() {
 	// Put EN HIGH to start sending data.
 	P2OUT |= EN;
-	delay_us(300);
+	delay_us(200);
 	
 	// First 4 bits of the packet. (00 0000)
 	P2OUT &= ~(RS + RW + D4 + D5 + D6 + D7);
 	
 	// End the packet transaction.
-	delay_us(300);
+	delay_us(200);
 	P2OUT &= ~EN;
 
 
 	// Put EN HIGH to start sending data.
 	P2OUT |= EN;
-	delay_us(300);
+	delay_us(200);
 	
 	// Last 4 bits of the packet. (00 0010)
 	P2OUT &= ~(RS + RW + D4 + D6 + D7);
 	P2OUT |= D5;
 	
 	// End the data transaction.
-	delay_us(300);
+	delay_us(200);
 	P2OUT &= ~EN;
 }
 
@@ -289,7 +289,7 @@ void lcd_return_home() {
 void lcd_putc(char c) {
 	// Put EN HIGH to start sending data.
 	P2OUT |= EN;
-	delay_us(300);
+	delay_us(200);
 	
 	// First 4 bits of the packet. (00 0100)
 	P2OUT |= RS;
@@ -301,13 +301,13 @@ void lcd_putc(char c) {
 	bit_to_pin(c, 7, D7);
 
 	// End the packet transaction.
-	delay_us(300);
+	delay_us(200);
 	P2OUT &= ~EN;
 
 
 	// Put EN HIGH to start sending data.
 	P2OUT |= EN;
-	delay_us(300);
+	delay_us(200);
 	
 	// Last 4 bits of the packet. (00 0001)
 	P2OUT |= RS;
@@ -319,6 +319,6 @@ void lcd_putc(char c) {
 	bit_to_pin(c, 3, D7);
 	
 	// End the data transaction.
-	delay_us(300);
+	delay_us(200);
 	P2OUT &= ~EN;
 }
