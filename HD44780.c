@@ -11,6 +11,7 @@
 #include "boolean.h"
 #include "HD44780.h"
 #include "delay.h"
+#include "bitio.h"
 
 // Define the LCD pins.
 #define RS BIT1
@@ -21,37 +22,7 @@
 #define D7 BIT6
 
 // Private function declarations.
-unsigned int get_byte(char b, unsigned int pos);
-void bit_to_pin(char c, unsigned int pos, unsigned int pin);
 void _lcd_clear();
-
-
-/**
- * Get a single bit from a byte.
- * 
- * @param b A byte.
- * @param pos The bit position to be extracted.
- * @return A bit.
- */
-unsigned int get_byte(char b, unsigned int pos) {
-	return (b & (1 << pos));
-}
-
-/**
- * Puts the desired bit into a pin. It's used to get the bits in a char
- * to send to the LCD.
- * 
- * @param c The character.
- * @param pos Bit position.
- * @param pin The pin to be set.
- */
-void bit_to_pin(char c, unsigned int pos, unsigned int pin) {
-	if (get_byte(c, pos)) {
-		P2OUT |= pin;
-	} else {
-		P2OUT &= ~pin;
-	}
-}
 
 /**
  * Initialize the LCD driver.
@@ -141,7 +112,7 @@ void lcd_function_set() {
 	
 	// Last 4 bits of the packet. (00 NF00)
 	P2OUT &= ~(RS + D4 + D5 + D6);
-	P2OUT |= D7;
+	P2OUT |= D7;  // Assumes a 2-line display.
 	
 	// End the data transaction.
 	delay_us(200);
@@ -176,9 +147,9 @@ void lcd_display_control(bool disp, bool cur, bool blk) {
 	P2OUT &= ~RS;
 	P2OUT |= D7;
 	
-	bit_to_pin(disp, 0, D6);
-	bit_to_pin(cur, 0, D5);
-	bit_to_pin(blk, 0, D4);
+	bit_to_pin(disp, 0, &P2OUT, D6);
+	bit_to_pin(cur, 0, &P2OUT, D5);
+	bit_to_pin(blk, 0, &P2OUT, D4);
 	
 	// End the data transaction.
 	delay_us(200);
@@ -281,6 +252,48 @@ void lcd_return_home() {
 }
 
 /**
+ *	Sets the cursor position.
+ *
+ *	@param line The line.
+ *	@param col The column.
+ */
+void lcd_set_cursor(unsigned int line, unsigned int col) {
+	char offsets[] = { 0x00, 0x40, 0x14, 0x54 };
+	char pos = offsets[line] + col;
+
+	// Put EN HIGH to start sending data.
+	P2OUT |= EN;
+	delay_us(200);
+	
+	// First 4 bits of the packet. (00 1AAA)
+	P2OUT &= ~RS;
+	P2OUT |= D7;
+	bit_to_pin(pos, 4, &P2OUT, D4);
+	bit_to_pin(pos, 5, &P2OUT, D5);
+	bit_to_pin(pos, 6, &P2OUT, D6);
+	
+	// End the packet transaction.
+	delay_us(200);
+	P2OUT &= ~EN;
+
+
+	// Put EN HIGH to start sending data.
+	P2OUT |= EN;
+	delay_us(200);
+	
+	// Last 4 bits of the packet. (00 AAAA)
+	P2OUT &= ~RS;
+	bit_to_pin(pos, 0, &P2OUT, D4);
+	bit_to_pin(pos, 1, &P2OUT, D5);
+	bit_to_pin(pos, 2, &P2OUT, D6);
+	bit_to_pin(pos, 3, &P2OUT, D7);
+	
+	// End the data transaction.
+	delay_us(200);
+	P2OUT &= ~EN;
+}
+
+/**
  * Put a character in the screen.
  * 
  * @param c Character.
@@ -293,10 +306,10 @@ void lcd_putc(const char c) {
 	// First 4 bits of the packet. (00 0100)
 	P2OUT |= RS;
 
-	bit_to_pin(c, 4, D4);
-	bit_to_pin(c, 5, D5);
-	bit_to_pin(c, 6, D6);
-	bit_to_pin(c, 7, D7);
+	bit_to_pin(c, 4, &P2OUT, D4);
+	bit_to_pin(c, 5, &P2OUT, D5);
+	bit_to_pin(c, 6, &P2OUT, D6);
+	bit_to_pin(c, 7, &P2OUT, D7);
 
 	// End the packet transaction.
 	delay_us(200);
@@ -310,10 +323,10 @@ void lcd_putc(const char c) {
 	// Last 4 bits of the packet. (00 0001)
 	P2OUT |= RS;
 
-	bit_to_pin(c, 0, D4);
-	bit_to_pin(c, 1, D5);
-	bit_to_pin(c, 2, D6);
-	bit_to_pin(c, 3, D7);
+	bit_to_pin(c, 0, &P2OUT, D4);
+	bit_to_pin(c, 1, &P2OUT, D5);
+	bit_to_pin(c, 2, &P2OUT, D6);
+	bit_to_pin(c, 3, &P2OUT, D7);
 	
 	// End the data transaction.
 	delay_us(200);
@@ -325,9 +338,20 @@ void lcd_putc(const char c) {
  * 
  * @param string The string.
  */
-void lcd_print(const char *string) {
+void _lcd_print(const char *string) {
 	while (*string != '\0') {
-		//if (*string == '\n') {
 		lcd_putc(*string++);
 	}
+}
+
+/**
+ *	Print a string at a position.
+ *
+ *	@param string The string.
+ *	@param line Screen line.
+ *	@param col Screen column.
+ */
+void lcd_print(const char *string, unsigned int line, unsigned int col) {
+	lcd_set_cursor(line, col);
+	_lcd_print(string);
 }

@@ -14,8 +14,9 @@ void main() {
 	lcd_init(TRUE, TRUE);
 
 	// Write stuff.
-	lcd_print("Hello, World!");
-	lcd_print("@@");
+	lcd_print("Hello, World!", 0, 0);
+	lcd_print("@@--", 1, 0);
+	// TODO: Learn how to jump to the next line (probably read the Arduino source)
 
 	while (1) {
 		// Turn the ON indicator.
